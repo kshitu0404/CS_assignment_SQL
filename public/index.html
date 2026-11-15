@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection Lab</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <main class="container">
+        <header class="header">
+            <h1>SQL Injection: Authentication Bypass</h1>
+        </header>
+
+        <section class="demo-bar">
+            <span class="demo-label">Quick Fill:</span>
+            <button type="button" class="btn-outline" data-user="admin" data-pass="admin123">
+                Valid Login (admin / admin123)
+            </button>
+            <button type="button" class="btn-outline" data-user="admin" data-pass="wrongpass">
+                Invalid Login (admin / wrongpass)
+            </button>
+            <button type="button" class="btn-outline btn-outline-danger" data-user="' OR '1'='1' #" data-pass="anything">
+                SQLi Payload (' OR '1'='1' #)
+            </button>
+        </section>
+
+        <section class="grid">
+            <article class="card card-vulnerable">
+                <h2>Vulnerable Implementation &ndash; mysql_query()</h2>
+                <code class="endpoint">POST /vulnerable/login</code>
+                <form id="vulnerable-form" autocomplete="off">
+                    <label for="vuln-username">Username</label>
+                    <input type="text" id="vuln-username" name="username" required>
+
+                    <label for="vuln-password">Password</label>
+                    <input type="password" id="vuln-password" name="password" required>
+
+                    <button type="submit" class="btn btn-danger">Vulnerable Login</button>
+                </form>
+                <div id="vuln-result" class="result" aria-live="polite"></div>
+            </article>
+
+            <article class="card card-secure">
+                <h2>Secure Implementation &ndash; mysql_stmt_prepare()</h2>
+                <code class="endpoint">POST /secure/login</code>
+                <form id="secure-form" autocomplete="off">
+                    <label for="sec-username">Username</label>
+                    <input type="text" id="sec-username" name="username" required>
+
+                    <label for="sec-password">Password</label>
+                    <input type="password" id="sec-password" name="password" required>
+
+                    <button type="submit" class="btn btn-success">Secure Login</button>
+                </form>
+                <div id="sec-result" class="result" aria-live="polite"></div>
+            </article>
+        </section>
+
+        <p class="note">
+            Vulnerable login concatenates input into the SQL string; secure login uses prepared statements with <code>?</code> placeholders.
+        </p>
+    </main>
+
+    <script src="/script.js"></script>
+</body>
+</html>
+

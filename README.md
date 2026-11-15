@@ -1,25 +1,31 @@
-# SQL Injection: Authentication Bypass Demo
+# SQL Injection: Authentication Bypass Demo (C++ / MySQL)
 
-A minimal Flask + SQLite application demonstrating SQL Injection authentication bypass and parameterized query mitigation.
+A lightweight C++17 web application demonstrating SQL Injection authentication bypass and parameterized query mitigation.
 
 ## Setup & Run
 
+### 1. Build
 ```bash
-pip install -r requirements.txt
-python app.py
+make
 ```
 
-Open: http://127.0.0.1:5000/login
+### 2. Run
+```bash
+export DB_HOST=127.0.0.1
+export DB_PORT=3306
+export DB_USER=root
+export DB_PASSWORD="YOUR_PASSWORD"
 
-## Test Payloads
+./sql_injection_lab
+```
 
-Enter any of the following into the **Username** field with any password:
+Open: http://127.0.0.1:8080
 
-1. `' OR '1'='1' --`
-2. `admin' --`
-3. `' OR username='admin' --`
+## Demonstration Payloads
 
-Default seeded accounts:
-- `admin` / `admin123`
-- `alice` / `alice-pass`
-- `bob` / `bob-pass`
+Enter into the **Username** field with any password:
+- `' OR '1'='1' #`
+- `admin' #`
+- `' OR '1'='1' -- `
+
+Default seeded user: `admin` / `admin123`

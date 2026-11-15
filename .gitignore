@@ -1,7 +1,5 @@
-__pycache__/
-*.py[cod]
-*$py.class
-demo.db
-.venv/
-venv/
+*.o
+*.exe
+sql_injection_lab
+bin/
 .DS_Store
