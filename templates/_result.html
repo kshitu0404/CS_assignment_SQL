@@ -1,0 +1,53 @@
+{% if result.error %}
+  <div class="result result--error">
+    <p class="result__status">Query error</p>
+    <p class="result__title">The database rejected the generated SQL</p>
+    <p class="result__detail result__detail--error">{{ result.error }}</p>
+{% elif result.success %}
+  <div class="result result--success">
+    <p class="result__status">Query returned a row</p>
+    {% if result.is_admin %}
+      <p class="result__title">Welcome, logged in as admin</p>
+    {% else %}
+      <p class="result__title">Welcome, logged in as {{ result.matched_username }}</p>
+    {% endif %}
+    <p class="result__detail">
+      Matched username: <code>{{ result.matched_username }}</code>
+      {% if result.is_admin %}<span class="pill">admin account</span>{% endif %}
+    </p>
+    {% if mode == "vulnerable" %}
+      <p class="result__note">
+        The vulnerable route accepted this row as a valid login. Compare it
+        with the fixed panel using the same payload.
+      </p>
+    {% else %}
+      <p class="result__note">
+        The fixed route accepted this row using bound values. Input was treated
+        as literal data.
+      </p>
+    {% endif %}
+{% else %}
+  <div class="result result--failure">
+    <p class="result__status">No row returned</p>
+    <p class="result__title">Login rejected</p>
+    <p class="result__detail">
+      {% if mode == "fixed" %}
+        The payload was searched for as literal text, so no account matched.
+      {% else %}
+        The query returned no matching account.
+      {% endif %}
+    </p>
+{% endif %}
+
+    <details class="query" open>
+      <summary>Executed query</summary>
+      <pre><code>{{ result.query }}</code></pre>
+      {% if result.parameters %}
+        <p class="query__params">
+          Bound values:
+          <code>username = {{ result.parameters[0] }}</code>
+          <code>password = {{ result.parameters[1] }}</code>
+        </p>
+      {% endif %}
+    </details>
+  </div>

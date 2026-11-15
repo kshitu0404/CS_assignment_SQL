@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Injection Auth Bypass Demo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1>SQL Injection: Authentication Bypass</h1>
+    </header>
+    <section class="comparison" aria-label="Vulnerable and fixed login comparison">
+      <article class="panel panel--vulnerable">
+        <div class="panel__head">
+          <div>
+            <p class="kicker">Before</p>
+            <h2>Vulnerable login</h2>
+          </div>
+          <span class="badge badge--danger">Vulnerable</span>
+        </div>
+        <p class="endpoint"><code>POST /login</code></p>
+
+        <form method="post" action="{{ url_for('login') }}" autocomplete="off">
+          <label for="vuln-username">Username</label>
+          <input id="vuln-username" name="username" type="text" value="{{ vulnerable_username }}" placeholder="username"
+            spellcheck="false" autocapitalize="off" required>
+
+          <label for="vuln-password">Password</label>
+          <input id="vuln-password" name="password" type="password" value="{{ vulnerable_password }}"
+            placeholder="password" spellcheck="false" autocapitalize="off" required>
+
+          <button class="button button--danger" type="submit">
+            Try vulnerable login
+          </button>
+        </form>
+
+        {% if vulnerable_result %}
+        {% set result = vulnerable_result %}
+        {% set mode = "vulnerable" %}
+        {% include "_result.html" %}
+        {% else %}
+        <div class="result result--idle">
+          <p class="result__title">Awaiting input</p>
+          <p>Submit a username and password to see the result here.</p>
+        </div>
+        {% endif %}
+      </article>
+
+      <article class="panel panel--fixed">
+        <div class="panel__head">
+          <div>
+            <p class="kicker">After</p>
+            <h2>Fixed login</h2>
+          </div>
+          <span class="badge badge--safe">Parameterized</span>
+        </div>
+        <p class="endpoint"><code>POST /login/fixed</code></p>
+
+        <form method="post" action="{{ url_for('login_fixed') }}" autocomplete="off">
+          <label for="fixed-username">Username</label>
+          <input id="fixed-username" name="username" type="text" value="{{ fixed_username }}" placeholder="username"
+            spellcheck="false" autocapitalize="off" required>
+
+          <label for="fixed-password">Password</label>
+          <input id="fixed-password" name="password" type="password" value="{{ fixed_password }}" placeholder="password"
+            spellcheck="false" autocapitalize="off" required>
+
+          <button class="button button--safe" type="submit">
+            Try fixed login
+          </button>
+        </form>
+
+        {% if fixed_result %}
+        {% set result = fixed_result %}
+        {% set mode = "fixed" %}
+        {% include "_result.html" %}
+        {% else %}
+        <div class="result result--idle">
+          <p class="result__title">Awaiting input</p>
+          <p>Reuse the same payload here to see it rejected.</p>
+        </div>
+        {% endif %}
+      </article>
+    </section>
+
+    <section class="payloads" aria-labelledby="payloads-title">
+      <div class="payloads__head">
+        <div>
+          <h2 id="payloads-title">Payloads</h2>
+        </div>
+      </div>
+
+      <ol class="payload-list">
+        <li>
+          <code>' OR '1'='1' --</code>
+        </li>
+        <li>
+          <code>admin' --</code>
+        </li>
+        <li>
+          <code>' OR username='admin' --</code>
+        </li>
+      </ol>
+
+      <p class="payloads__note">
+        Default accounts: <code>admin / admin123</code>,
+        <code>alice / alice-pass</code>, and <code>bob / bob-pass</code>
+      </p>
+    </section>
+  </main>
+</body>
+
+</html>
